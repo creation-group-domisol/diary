@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.group.creation.domisol.diary.MainActivity">
 
-    <FrameLayout
+    <com.group.creation.domisol.diary.FlingLayout
         android:id="@+id/main_content"
         android:layout_weight="1"
         android:background="#111111"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    </FrameLayout>
+    </com.group.creation.domisol.diary.FlingLayout>
     <LinearLayout
         android:layout_weight="10"
         android:orientation="vertical"
@@ -31,7 +30,8 @@
             android:background="@android:color/holo_blue_bright"
             android:padding="0dp"
             android:text="@string/tab_memo"
-            android:textAppearance="@style/TextAppearance.AppCompat.Button" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Button"
+            android:onClick="onToMemo"/>
 
         <Button
             android:id="@+id/button2"
@@ -43,7 +43,8 @@
             android:background="@android:color/holo_orange_light"
             android:padding="0dp"
             android:text="@string/tab_cal"
-            android:textAppearance="@style/TextAppearance.AppCompat.Button" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Button"
+            android:onClick="onToCalendar"/>
 
         <Button
             style="@style/Widget.AppCompat.Button.Borderless.Colored"
@@ -54,7 +55,8 @@
             android:background="@android:color/holo_green_light"
             android:padding="0dp"
             android:text="@string/tab_contacts"
-            android:textAppearance="@style/TextAppearance.AppCompat.Button" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Button"
+            android:onClick="onToContacts"/>
 
         <Button
             style="@style/Widget.AppCompat.Button.Borderless.Colored"
