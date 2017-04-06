@@ -59,11 +59,11 @@ public class MemoFragment extends Fragment implements Swipable {
 
     @Override
     public void swipeLeft() {
-        editText.setText(page1);
+        editText.setText(page2);
     }
 
     @Override
     public void swipeRight() {
-        editText.setText(page2);
+        editText.setText(page1);
     }
 }
