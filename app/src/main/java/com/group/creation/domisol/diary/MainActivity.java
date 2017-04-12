@@ -18,9 +18,7 @@ public class MainActivity extends AppCompatActivity {
     private CalendarFragment calendarFragment = new CalendarFragment();
     private MemoFragment memoFragment = new MemoFragment();
     private ContactFragment contactFragment = new ContactFragment();
-    private GestureDetector gestureDetector;
     private FrameLayout mainContent;
-    private ImageView imageView;
 
 
     @Override
@@ -29,63 +27,10 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
-        imageView = (ImageView) findViewById(R.id.image_preview);
         mainContent = (FrameLayout) findViewById(R.id.main_content);
         mainContent.setDrawingCacheEnabled(true);
 
-
-
         getSupportFragmentManager().beginTransaction().add(R.id.main_content, memoFragment).commit();
-
-
-        gestureDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener(){
-
-            public static final float SWIPE_THRESHOLD = 0;
-            public static final float SWIPE_VELOCITY_THRESHOLD = 0;
-
-            @Override
-            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-                boolean result = false;
-                try {
-                    float diffY = e2.getY() - e1.getY();
-                    float diffX = e2.getX() - e1.getX();
-                    if (Math.abs(diffX) > Math.abs(diffY)) {
-                        if (Math.abs(diffX) > SWIPE_THRESHOLD && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
-                            if (diffX > 0) {
-                                onSwipeRight();
-                            } else {
-                                onSwipeLeft();
-                            }
-                            result = true;
-                        }
-                    }
-                    else{
-                        result = true;
-                    }
-                } catch (Exception exception) {
-                    exception.printStackTrace();
-                }
-                return result;
-            }
-
-            private void onSwipeLeft() {
-
-                Bitmap mainContentCapture = mainContent.getDrawingCache();
-
-                imageView.setImageBitmap(mainContentCapture);
-
-
-
-                Swipable currentFragment = (Swipable) getSupportFragmentManager().findFragmentById(R.id.main_content);
-                currentFragment.swipeLeft();
-            }
-
-            private void onSwipeRight() {
-                Swipable currentFragment = (Swipable) getSupportFragmentManager().findFragmentById(R.id.main_content);
-                currentFragment.swipeRight();
-            }
-        });
-
     }
 
 

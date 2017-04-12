@@ -2,6 +2,7 @@ package com.group.creation.domisol.diary;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,7 +12,9 @@ import android.support.v4.app.FragmentManager;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 public class FlingLayout extends FrameLayout {
     private GestureDetector gestureDetector;
@@ -37,7 +40,7 @@ public class FlingLayout extends FrameLayout {
         return super.onInterceptTouchEvent(ev);
     }
 
-    private void initGestureDetector(Context context) {
+    private void initGestureDetector(final Context context) {
         this.gestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener(){
 
             public static final float SWIPE_THRESHOLD = 0;
@@ -77,6 +80,14 @@ public class FlingLayout extends FrameLayout {
             }
 
             private void onSwipeLeft() {
+                View fling = findViewById(R.id.main_content);
+
+                fling.setDrawingCacheEnabled(true);
+                ImageView imageView = (ImageView) ((Activity) context).findViewById(R.id.image_preview);
+                Bitmap bitmap = Bitmap.createBitmap(fling.getDrawingCache());
+                fling.setDrawingCacheEnabled(false);
+                imageView.setImageBitmap(bitmap);
+
                 Swipable currentFragment = (Swipable) this.fragmentManager.findFragmentById(R.id.main_content);
                 currentFragment.swipeLeft();
             }
