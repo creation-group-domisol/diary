@@ -1,11 +1,14 @@
 package com.group.creation.domisol.diary;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 import com.group.creation.domisol.diary.calendar.CalendarFragment;
 import com.group.creation.domisol.diary.contacts.ContactFragment;
@@ -16,6 +19,8 @@ public class MainActivity extends AppCompatActivity {
     private MemoFragment memoFragment = new MemoFragment();
     private ContactFragment contactFragment = new ContactFragment();
     private GestureDetector gestureDetector;
+    private FrameLayout mainContent;
+    private ImageView imageView;
 
 
     @Override
@@ -23,6 +28,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
+
+        imageView = (ImageView) findViewById(R.id.image_preview);
+        mainContent = (FrameLayout) findViewById(R.id.main_content);
+        mainContent.setDrawingCacheEnabled(true);
 
 
 
@@ -60,6 +69,13 @@ public class MainActivity extends AppCompatActivity {
             }
 
             private void onSwipeLeft() {
+
+                Bitmap mainContentCapture = mainContent.getDrawingCache();
+
+                imageView.setImageBitmap(mainContentCapture);
+
+
+
                 Swipable currentFragment = (Swipable) getSupportFragmentManager().findFragmentById(R.id.main_content);
                 currentFragment.swipeLeft();
             }
