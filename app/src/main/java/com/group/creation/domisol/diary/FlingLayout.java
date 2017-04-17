@@ -1,6 +1,7 @@
 package com.group.creation.domisol.diary;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -73,6 +74,7 @@ public class FlingLayout extends FrameLayout {
                             } else {
                                 onSwipeLeft();
                             }
+                            pageCurlView.setVisibility(INVISIBLE);
                             result = true;
                         }
                     }
@@ -87,20 +89,12 @@ public class FlingLayout extends FrameLayout {
 
             @Override
             public boolean onDown(MotionEvent e) {
-//                if(content.getVisibility() == INVISIBLE) return super.onDown(e);
-//                pageCurlView.setImageBitmap(content.getDrawingCache());
-//                pageCurlView.setVisibility(VISIBLE);
-//                content.setVisibility(INVISIBLE);
+                content.setDrawingCacheEnabled(true);
+                content.buildDrawingCache();
+                pageCurlView.setImageBitmap(Bitmap.createBitmap(content.getDrawingCache(true)));
+                pageCurlView.setVisibility(VISIBLE);
+                content.destroyDrawingCache();
                 return super.onDown(e);
-            }
-
-
-
-            @Override
-            public boolean onSingleTapUp(MotionEvent e) {
-                pageCurlView.setVisibility(INVISIBLE);
-                content.setVisibility(VISIBLE);
-                return super.onSingleTapUp(e);
             }
 
             private void onSwipeLeft() {

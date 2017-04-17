@@ -1,14 +1,10 @@
 package com.group.creation.domisol.diary;
 
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 
 import com.group.creation.domisol.diary.calendar.CalendarFragment;
 import com.group.creation.domisol.diary.contacts.ContactFragment;
