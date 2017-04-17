@@ -1,23 +1,21 @@
 package com.group.creation.domisol.diary;
 
-import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.StyleRes;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
-import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 public class FlingLayout extends FrameLayout {
     private GestureDetector gestureDetector;
+    private FrameLayout content;
+    private ImageView pageCurlView;
 
     public FlingLayout(@NonNull Context context) {
         super(context);
@@ -32,10 +30,18 @@ public class FlingLayout extends FrameLayout {
     }
 
     @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        pageCurlView = (ImageView) findViewById(R.id.transition_view);
+        content = (FrameLayout) findViewById(R.id.main_content);
+        content.setDrawingCacheEnabled(true);
+        super.onLayout(changed, left, top, right, bottom);
+    }
+
+    @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        System.out.println("!");
         if (gestureDetector == null)
             initGestureDetector(getContext());
+
         gestureDetector.onTouchEvent(ev);
         return super.onInterceptTouchEvent(ev);
     }
@@ -50,13 +56,13 @@ public class FlingLayout extends FrameLayout {
             {
                 FragmentActivity fragmentActivity = (FragmentActivity) getContext();
                 this.fragmentManager = fragmentActivity.getSupportFragmentManager();
-                System.out.println(this.fragmentManager);
+
             }
 
             @Override
             public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-
                 boolean result = false;
+
                 try {
                     float diffY = e2.getY() - e1.getY();
                     float diffX = e2.getX() - e1.getX();
@@ -79,15 +85,25 @@ public class FlingLayout extends FrameLayout {
                 return result;
             }
 
+            @Override
+            public boolean onDown(MotionEvent e) {
+//                if(content.getVisibility() == INVISIBLE) return super.onDown(e);
+//                pageCurlView.setImageBitmap(content.getDrawingCache());
+//                pageCurlView.setVisibility(VISIBLE);
+//                content.setVisibility(INVISIBLE);
+                return super.onDown(e);
+            }
+
+
+
+            @Override
+            public boolean onSingleTapUp(MotionEvent e) {
+                pageCurlView.setVisibility(INVISIBLE);
+                content.setVisibility(VISIBLE);
+                return super.onSingleTapUp(e);
+            }
+
             private void onSwipeLeft() {
-                View fling = findViewById(R.id.main_content);
-
-                fling.setDrawingCacheEnabled(true);
-                ImageView imageView = (ImageView) ((Activity) context).findViewById(R.id.image_preview);
-                Bitmap bitmap = Bitmap.createBitmap(fling.getDrawingCache());
-                fling.setDrawingCacheEnabled(false);
-                imageView.setImageBitmap(bitmap);
-
                 Swipable currentFragment = (Swipable) this.fragmentManager.findFragmentById(R.id.main_content);
                 currentFragment.swipeLeft();
             }

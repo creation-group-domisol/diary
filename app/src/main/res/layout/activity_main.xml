@@ -7,24 +7,25 @@
     android:layout_height="match_parent"
     tools:context="com.group.creation.domisol.diary.MainActivity">
 
-    <ImageView
-        android:id="@+id/image_preview"
-        android:layout_width="153dp"
-        android:layout_height="202dp"
-        android:background="@android:color/holo_blue_bright"
-        app:srcCompat="@mipmap/ic_launcher" />
-
     <com.group.creation.domisol.diary.FlingLayout
-        android:id="@+id/main_content"
         android:layout_weight="1"
         android:background="#111111"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <TextView
+
+        <FrameLayout
+            android:id="@+id/main_content"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="layer2"
-            android:background="#aaaaaa"/>
+            android:layout_height="match_parent">
+        </FrameLayout>
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginTop="100dp"
+            android:background="@color/colorPrimary"
+            android:id="@+id/transition_view"/>
+
     </com.group.creation.domisol.diary.FlingLayout>
     <LinearLayout
         android:layout_weight="10"
