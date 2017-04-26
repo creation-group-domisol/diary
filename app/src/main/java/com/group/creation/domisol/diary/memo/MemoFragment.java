@@ -1,9 +1,12 @@
 package com.group.creation.domisol.diary.memo;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +14,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
+import com.group.creation.domisol.diary.MainActivity;
 import com.group.creation.domisol.diary.R;
 import com.group.creation.domisol.diary.Swipable;
 
@@ -23,6 +27,7 @@ public class MemoFragment extends Fragment implements Swipable {
     private static String page1 = "page1";
     private static String page2 = "page2";
     private EditText editText;
+    private SQLiteDatabase db;
 
     @Nullable
     @Override
@@ -31,6 +36,8 @@ public class MemoFragment extends Fragment implements Swipable {
         editText = (EditText) rootView.findViewById(R.id.memo_content);
         editText.getBackground().clearColorFilter();
         editText.setText(page1);
+
+
 
         final LinearLayout backgoundLayout = (LinearLayout) rootView.findViewById(R.id.memo_backgound);
 
@@ -41,6 +48,17 @@ public class MemoFragment extends Fragment implements Swipable {
             }
         });
 
+        MainActivity mainActivity = (MainActivity) getContext();
+        db = mainActivity.getReadableDatabase();
+
+        db.execSQL("insert into MEMO (content) values('default')");
+        Cursor cursor = db.rawQuery("select content from MEMO", null);
+
+        System.out.println(cursor.getCount());
+        cursor.moveToNext();
+        String memo = cursor.getString(1);
+        editText.setText(memo);
+        cursor.close();
 
         editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -48,6 +66,12 @@ public class MemoFragment extends Fragment implements Swipable {
                 if(!hasFocus){
                     InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+
+
+
+                    String text = editText.getText().toString();
+
+                    db.execSQL("update MEMO set content = '" + text + "' where page = 1");
                 }
             }
         });
