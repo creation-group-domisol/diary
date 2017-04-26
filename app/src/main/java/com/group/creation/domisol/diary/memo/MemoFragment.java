@@ -13,10 +13,14 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.group.creation.domisol.diary.MainActivity;
 import com.group.creation.domisol.diary.R;
 import com.group.creation.domisol.diary.Swipable;
+
+import java.util.Arrays;
+import java.util.NoSuchElementException;
 
 /**
  * Created by daumkakao on 2017. 4. 3..
@@ -24,20 +28,23 @@ import com.group.creation.domisol.diary.Swipable;
 
 public class MemoFragment extends Fragment implements Swipable {
 
-    private static String page1 = "page1";
-    private static String page2 = "page2";
+    private static int curPage = 0;
     private EditText editText;
     private SQLiteDatabase db;
+    private ViewGroup rootView;
+    private TextView pageView;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_memo, container, false);
+        MainActivity mainActivity = (MainActivity) getContext();
+        db = mainActivity.getReadableDatabase();
+
+        rootView = (ViewGroup) inflater.inflate(R.layout.fragment_memo, container, false);
         editText = (EditText) rootView.findViewById(R.id.memo_content);
+        pageView = (TextView) rootView.findViewById(R.id.memo_page);
         editText.getBackground().clearColorFilter();
-        editText.setText(page1);
-
-
+        editText.setText(getContentThenChangeCurPage(0));
 
         final LinearLayout backgoundLayout = (LinearLayout) rootView.findViewById(R.id.memo_backgound);
 
@@ -48,34 +55,24 @@ public class MemoFragment extends Fragment implements Swipable {
             }
         });
 
-        MainActivity mainActivity = (MainActivity) getContext();
-        db = mainActivity.getReadableDatabase();
-
-        db.execSQL("insert into MEMO (content) values('default')");
-        Cursor cursor = db.rawQuery("select content from MEMO", null);
-
-        System.out.println(cursor.getCount());
-        cursor.moveToNext();
-        String memo = cursor.getString(1);
-        editText.setText(memo);
-        cursor.close();
 
         editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(!hasFocus){
+                if (!hasFocus) {
                     InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-
-
-
                     String text = editText.getText().toString();
-
-                    db.execSQL("update MEMO set content = '" + text + "' where page = 1");
+                    Cursor curPageCursor = db.rawQuery("select content from MEMO where page = ?", new String[]{curPage + ""});
+                    if (curPageCursor.getCount() < 1 && !text.equals("")) {
+                        db.execSQL("insert into MEMO (page, content) values(?, ?)", new Object[]{curPage, text});
+                    } else {
+                        db.execSQL("update MEMO set content = ? where page = ?", new Object[]{text, curPage});
+                    }
+                    curPageCursor.close();
                 }
             }
         });
-
 
 
         return rootView;
@@ -83,11 +80,26 @@ public class MemoFragment extends Fragment implements Swipable {
 
     @Override
     public void swipeLeft() {
-        editText.setText(page2);
+        editText.setText(getContentThenChangeCurPage(curPage + 1));
     }
 
     @Override
     public void swipeRight() {
-        editText.setText(page1);
+        if (curPage == 0) {
+            return;
+        }
+        editText.setText(getContentThenChangeCurPage(curPage - 1));
+    }
+
+    private String getContentThenChangeCurPage(int page) {
+        final Cursor cursor = db.rawQuery("select content from MEMO where page = ?", new String[]{page + ""});
+        String memo = "";
+        if (cursor.moveToNext()) {
+            memo = cursor.getString(0);
+        }
+        cursor.close();
+        this.curPage = page;
+        this.pageView.setText(page + 1 + "");
+        return memo;
     }
 }

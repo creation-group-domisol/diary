@@ -11,14 +11,24 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:text="@string/tab_memo"/>
 
     <EditText
         android:id="@+id/memo_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/transparent"/>
+        android:layout_weight="20"
+        android:gravity="top|left"
+        android:background="@android:color/transparent" />
 
-
-
+    <TextView
+        android:id="@+id/memo_page"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_weight="1"
+        android:text="200"
+        android:gravity="bottom"
+        android:textAlignment="center" />
 </LinearLayout>

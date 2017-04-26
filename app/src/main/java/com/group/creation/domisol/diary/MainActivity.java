@@ -30,19 +30,14 @@ public class MainActivity extends AppCompatActivity {
         mainContent = (FrameLayout) findViewById(R.id.main_content);
         mainContent.setDrawingCacheEnabled(true);
 
-
-        SQLiteDatabase sqLiteDatabase = openOrCreateDatabase("diary.db", MODE_PRIVATE, null);
-
         SQLiteOpenHelper sqLiteOpenHelper = new SQLiteOpenHelper(this, "diary.db", null, 1) {
             @Override
             public void onCreate(SQLiteDatabase db) {
                 db.execSQL("" +
                         "create table MEMO (" +
-                        "   page integer PRIMARY KEY autoincrement," +
+                        "   page integer PRIMARY KEY," +
                         "   content text" +
                         ")");
-
-                db.execSQL("insert into MEMO (page, content) values(1,'default')");
             }
 
             @Override
