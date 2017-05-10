@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -37,7 +38,7 @@ public class MemoFragment extends Fragment implements Swipable {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        MainActivity mainActivity = (MainActivity) getContext();
+        final MainActivity mainActivity = (MainActivity) getContext();
         db = mainActivity.getReadableDatabase();
 
         rootView = (ViewGroup) inflater.inflate(R.layout.fragment_memo, container, false);
@@ -55,6 +56,28 @@ public class MemoFragment extends Fragment implements Swipable {
             }
         });
 
+        editText.setOnTouchListener(new View.OnTouchListener() {
+            float downX;
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    downX = event.getX();
+                }
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    return determineGettingFocus(v, event.getX());
+                }
+                return true;
+            }
+
+            private boolean determineGettingFocus(View v, float upX) {
+                if (Math.abs(downX - upX) < 50f) {
+                    v.requestFocus();
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+        });
 
         editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
