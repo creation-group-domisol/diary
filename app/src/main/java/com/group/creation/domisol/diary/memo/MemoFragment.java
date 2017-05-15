@@ -6,7 +6,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -19,9 +18,6 @@ import android.widget.TextView;
 import com.group.creation.domisol.diary.MainActivity;
 import com.group.creation.domisol.diary.R;
 import com.group.creation.domisol.diary.Swipable;
-
-import java.util.Arrays;
-import java.util.NoSuchElementException;
 
 /**
  * Created by daumkakao on 2017. 4. 3..
@@ -86,13 +82,7 @@ public class MemoFragment extends Fragment implements Swipable {
                     InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                     String text = editText.getText().toString();
-                    Cursor curPageCursor = db.rawQuery("select content from MEMO where page = ?", new String[]{curPage + ""});
-                    if (curPageCursor.getCount() < 1 && !text.equals("")) {
-                        db.execSQL("insert into MEMO (page, content) values(?, ?)", new Object[]{curPage, text});
-                    } else {
-                        db.execSQL("update MEMO set content = ? where page = ?", new Object[]{text, curPage});
-                    }
-                    curPageCursor.close();
+                    saveContent(text, curPage);
                 }
             }
         });
@@ -103,6 +93,7 @@ public class MemoFragment extends Fragment implements Swipable {
 
     @Override
     public void swipeLeft() {
+        saveContent(editText.getText().toString(), curPage);
         editText.setText(getContentThenChangeCurPage(curPage + 1));
     }
 
@@ -111,6 +102,7 @@ public class MemoFragment extends Fragment implements Swipable {
         if (curPage == 0) {
             return;
         }
+        saveContent(editText.getText().toString(), curPage);
         editText.setText(getContentThenChangeCurPage(curPage - 1));
     }
 
@@ -124,5 +116,15 @@ public class MemoFragment extends Fragment implements Swipable {
         this.curPage = page;
         this.pageView.setText(page + 1 + "");
         return memo;
+    }
+
+    private void saveContent(String text, int page) {
+        Cursor curPageCursor = db.rawQuery("select content from MEMO where page = ?", new String[]{page + ""});
+        if (curPageCursor.getCount() < 1 && !text.equals("")) {
+            db.execSQL("insert into MEMO (page, content) values(?, ?)", new Object[]{page, text});
+        } else {
+            db.execSQL("update MEMO set content = ? where page = ?", new Object[]{text, page});
+        }
+        curPageCursor.close();
     }
 }
