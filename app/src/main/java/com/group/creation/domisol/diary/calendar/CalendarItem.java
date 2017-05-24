@@ -5,20 +5,24 @@ package com.group.creation.domisol.diary.calendar;
  */
 
 public class CalendarItem {
-    private int date;
+    private String dayOfWeek;
     private String contents;
 
-    public CalendarItem(int date, String contents) {
-        this.date = date;
+    public CalendarItem(String dayOfWeek) {
+        this.dayOfWeek = dayOfWeek;
+    }
+
+    public CalendarItem(String dayOfWeek, String contents) {
+        this.dayOfWeek = dayOfWeek;
         this.contents = contents;
     }
 
-    public int getDate() {
-        return date;
+    public String getDayOfWeek() {
+        return dayOfWeek;
     }
 
-    public void setDate(int date) {
-        this.date = date;
+    public void setDayOfWeek(String dayOfWeek) {
+        this.dayOfWeek = dayOfWeek;
     }
 
     public String getContents() {

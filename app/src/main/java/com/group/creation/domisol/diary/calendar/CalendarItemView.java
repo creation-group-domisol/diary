@@ -18,10 +18,10 @@ public class CalendarItemView extends LinearLayout {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.calendar_list_item, this, true);
 
-        int date = aItem.getDate();
+        String date = aItem.getDayOfWeek();
         String contents = aItem.getContents();
 
-        TextView dateView = (TextView) findViewById(R.id.date);
+        TextView dateView = (TextView) findViewById(R.id.dayOfWeek);
         TextView contentsView = (TextView) findViewById(R.id.contents);
 
         dateView.setText(date + "");

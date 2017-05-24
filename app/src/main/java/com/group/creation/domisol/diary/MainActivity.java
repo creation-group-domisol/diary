@@ -38,6 +38,21 @@ public class MainActivity extends AppCompatActivity {
                         "   page integer PRIMARY KEY," +
                         "   content text" +
                         ")");
+
+                db.execSQL("" +
+                        "create table CALENDAR_WEEK (" +
+                        "   page integer PRIMARY KEY," +
+                        "   month integer," +
+                        "   week integer" +
+                        ")");
+
+                db.execSQL("" +
+                        "create table CALENDAR_DAY (" +
+                        "   id integer PRIMARY KEY AUTOINCREMENT," +
+                        "   page integer," +
+                        "   weekday integer," +
+                        "   content text" +
+                        ")");
             }
 
             @Override
