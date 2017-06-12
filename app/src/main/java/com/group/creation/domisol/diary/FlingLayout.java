@@ -16,7 +16,7 @@ import android.widget.ImageView;
 public class FlingLayout extends FrameLayout {
     private GestureDetector gestureDetector;
     private FrameLayout content;
-    private ImageView pageCurlView;
+//    private ImageView pageCurlView;
 
     public FlingLayout(@NonNull Context context) {
         super(context);
@@ -32,9 +32,9 @@ public class FlingLayout extends FrameLayout {
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        pageCurlView = (ImageView) findViewById(R.id.transition_view);
+//        pageCurlView = (ImageView) findViewById(R.id.transition_view);
         content = (FrameLayout) findViewById(R.id.main_content);
-        content.setDrawingCacheEnabled(true);
+//        content.setDrawingCacheEnabled(true);
         super.onLayout(changed, left, top, right, bottom);
     }
 
@@ -74,7 +74,7 @@ public class FlingLayout extends FrameLayout {
                             } else {
                                 onSwipeLeft();
                             }
-                            pageCurlView.setVisibility(INVISIBLE);
+//                            pageCurlView.setVisibility(INVISIBLE);
                             result = true;
                         }
                     }
@@ -89,11 +89,11 @@ public class FlingLayout extends FrameLayout {
 
             @Override
             public boolean onDown(MotionEvent e) {
-                content.setDrawingCacheEnabled(true);
-                content.buildDrawingCache();
-                pageCurlView.setImageBitmap(Bitmap.createBitmap(content.getDrawingCache(true)));
-                pageCurlView.setVisibility(VISIBLE);
-                content.destroyDrawingCache();
+//                content.setDrawingCacheEnabled(true);
+//                content.buildDrawingCache();
+//                pageCurlView.setImageBitmap(Bitmap.createBitmap(content.getDrawingCache(true)));
+//                pageCurlView.setVisibility(VISIBLE);
+//                content.destroyDrawingCache();
                 return super.onDown(e);
             }
 
