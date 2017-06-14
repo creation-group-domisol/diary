@@ -50,28 +50,17 @@ public class CalendarFragment extends Fragment implements Swipable {
         weekSpinner.setPrompt("주");
 
         itemAdapter = new CalendarItemListAdapter(getContext());
-        initListItem(itemAdapter);
+        itemAdapter.init();
         calendarListContainer.setAdapter(itemAdapter);
         return rootView;
     }
-
-    private void initListItem(CalendarItemListAdapter itemAdapter) {
-        itemAdapter.addItem(new CalendarItem("월"));
-        itemAdapter.addItem(new CalendarItem("화"));
-        itemAdapter.addItem(new CalendarItem("수"));
-        itemAdapter.addItem(new CalendarItem("목"));
-        itemAdapter.addItem(new CalendarItem("금"));
-        itemAdapter.addItem(new CalendarItem("토"));
-        itemAdapter.addItem(new CalendarItem("일"));
-    }
-
 
     private void saveWeek(int page){
         String selectedWeek = weekSpinner.getSelectedItem().toString();
         String selectedMonth = monthSpinner.getSelectedItem().toString();
 
-        Cursor curPageCursor = db.rawQuery("select content from CALENDAR_WEEK where page = ?", new String[]{page + ""});
-        if (curPageCursor.getCount() < 1 && (!selectedWeek.equals("") && !selectedMonth.equals(""))) {
+        Cursor curPageCursor = db.rawQuery("select * from CALENDAR_WEEK where page = ?", new String[]{page + ""});
+        if (curPageCursor.getCount() < 1 && ((selectedWeek == null || !selectedWeek.equals("")) && (selectedMonth == null || !selectedMonth.equals("")))) {
             db.execSQL("insert into CALENDAR_WEEK (page, month, week) values(?, ?, ?)", new Object[]{page, selectedMonth, selectedWeek});
         } else {
             db.execSQL("update CALENDAR_WEEK set month = ?, week = ? where page = ?", new Object[]{selectedMonth, selectedWeek, page});
@@ -97,10 +86,36 @@ public class CalendarFragment extends Fragment implements Swipable {
 //                ")");
 
         Cursor curPageCursor = db.rawQuery("select content from CALENDAR_DAY where page = ? and weekday = ?", new String[]{page + "", weekday + ""});
-        if (curPageCursor.getCount() < 1 && !text.equals("")) {
+        if (curPageCursor.getCount() < 1 && (text == null || !text.equals(""))) {
             db.execSQL("insert into CALENDAR_DAY (page, weekday, content) values(?, ?, ?)", new Object[]{page, weekday, text});
         } else {
             db.execSQL("update CALENDAR_DAY set content = ? where page = ? and weekday = ?", new Object[]{text, page, weekday});
+        }
+        curPageCursor.close();
+    }
+
+    private void loadWeek(int page)  {
+        Cursor curPageCursor = db.rawQuery("select * from CALENDAR_WEEK where page = ?", new String[]{page + ""});
+        if (curPageCursor.getCount() < 1)
+            return;
+        curPageCursor.moveToNext();
+        Integer month = curPageCursor.getInt(1);
+        Integer week = curPageCursor.getInt(2);
+        curPageCursor.close();
+
+        monthSpinner.setSelection(month);
+        weekSpinner.setSelection(week);
+    }
+
+    private void loadDay(int page) {
+        Cursor curPageCursor = db.rawQuery("select * from CALENDAR_DAY where page = ?", new String[]{page + ""});
+        if (curPageCursor.getCount() < 1)
+            return;
+        for (int i = 0; i < curPageCursor.getCount(); i++) {
+            curPageCursor.moveToNext();
+            int week = curPageCursor.getInt(2);
+            String contents = curPageCursor.getString(3);
+            itemAdapter.setItem(week, contents);
         }
         curPageCursor.close();
     }
@@ -109,16 +124,22 @@ public class CalendarFragment extends Fragment implements Swipable {
     public void swipeLeft() {
         saveWeek(currentPage);
         saveDay(currentPage);
-//        editText.setText(getContentThenChangeCurPage(curPage + 1));
+        itemAdapter.init();
+        currentPage++;
+        loadWeek(currentPage);
+        loadDay(currentPage);
     }
 
     @Override
     public void swipeRight() {
-//        if (curPage == 0) {
-//            return;
-//        }
-//        saveWeek(editText.getText().toString(), curPage);
-//        saveDay(editText.getText().toString(), curPage);
-//        editText.setText(getContentThenChangeCurPage(curPage - 1));
+        if (currentPage == 0) {
+            return;
+        }
+        saveWeek(currentPage);
+        saveDay(currentPage);
+        itemAdapter.init();
+        currentPage--;
+        loadWeek(currentPage);
+        loadDay(currentPage);
     }
 }
