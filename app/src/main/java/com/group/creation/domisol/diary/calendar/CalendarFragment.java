@@ -124,10 +124,11 @@ public class CalendarFragment extends Fragment implements Swipable {
     public void swipeLeft() {
         saveWeek(currentPage);
         saveDay(currentPage);
-        itemAdapter.init();
+        itemAdapter.clear();
         currentPage++;
         loadWeek(currentPage);
         loadDay(currentPage);
+        itemAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -137,9 +138,10 @@ public class CalendarFragment extends Fragment implements Swipable {
         }
         saveWeek(currentPage);
         saveDay(currentPage);
-        itemAdapter.init();
+        itemAdapter.clear();
         currentPage--;
         loadWeek(currentPage);
         loadDay(currentPage);
+        itemAdapter.notifyDataSetChanged();
     }
 }

@@ -15,6 +15,8 @@ import com.group.creation.domisol.diary.R;
 
 public class CalendarItemView extends LinearLayout {
     private CalendarItem aItem;
+    private final TextView contentsView;
+
     public CalendarItemView(Context context, final CalendarItem aItem) {
         super(context);
         this.aItem = aItem;
@@ -26,7 +28,8 @@ public class CalendarItemView extends LinearLayout {
         String contents = aItem.getContents();
 
         TextView dateView = (TextView) findViewById(R.id.dayOfWeek);
-        TextView contentsView = (TextView) findViewById(R.id.contents);
+        contentsView = (TextView) findViewById(R.id.contents);
+
 
         contentsView.addTextChangedListener(new TextWatcher() {
             @Override
@@ -46,8 +49,10 @@ public class CalendarItemView extends LinearLayout {
         });
 
         dateView.setText(date + "");
-        contentsView.setText(contents);
+        setContents(contents);
     }
 
-
+    public void setContents(String contents) {
+        contentsView.setText(contents);
+    }
 }

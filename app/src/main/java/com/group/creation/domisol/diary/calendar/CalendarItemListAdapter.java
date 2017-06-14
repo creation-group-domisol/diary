@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -15,6 +16,7 @@ import java.util.List;
 public class CalendarItemListAdapter extends BaseAdapter {
     private Context context;
     private List<CalendarItem> calendarItems = new ArrayList<>();
+    private List<CalendarItemView> itemViews = new ArrayList<>();
 
     public CalendarItemListAdapter(Context context) {
         this.context = context;
@@ -43,11 +45,11 @@ public class CalendarItemListAdapter extends BaseAdapter {
         } else {
             itemView = (CalendarItemView) convertView;
         }
+        itemViews.add(itemView);
         return itemView;
     }
 
     public void init() {
-        clear();
         addItem(new CalendarItem("월"));
         addItem(new CalendarItem("화"));
         addItem(new CalendarItem("수"));
@@ -58,7 +60,9 @@ public class CalendarItemListAdapter extends BaseAdapter {
     }
 
     public void clear() {
-        calendarItems.clear();
+        for (CalendarItem calendarItem : calendarItems) {
+            calendarItem.setContents(null);
+        }
     }
 
     public void addItem(CalendarItem calendarItem) {
@@ -67,5 +71,6 @@ public class CalendarItemListAdapter extends BaseAdapter {
 
     public void setItem(int idx, String contents) {
         this.calendarItems.get(idx).setContents(contents);
+        this.itemViews.get(idx).setContents(contents);
     }
 }
