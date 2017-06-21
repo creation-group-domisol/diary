@@ -17,6 +17,10 @@ import com.group.creation.domisol.diary.MainActivity;
 import com.group.creation.domisol.diary.R;
 import com.group.creation.domisol.diary.Swipable;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Created by cob on 2017. 3. 29..
  */
@@ -49,7 +53,7 @@ public class CalendarFragment extends Fragment implements Swipable {
         weekSpinner.setAdapter(weekAdapter);
         weekSpinner.setPrompt("주");
 
-        itemAdapter = new CalendarItemListAdapter(getContext());
+        itemAdapter = new CalendarItemListAdapter(getContext(), R.layout.calendar_list_item, new ArrayList<CalendarItem>());
         itemAdapter.init();
         calendarListContainer.setAdapter(itemAdapter);
         return rootView;
@@ -124,10 +128,21 @@ public class CalendarFragment extends Fragment implements Swipable {
     public void swipeLeft() {
         saveWeek(currentPage);
         saveDay(currentPage);
-        itemAdapter.init();
+        itemAdapter.clear();
         currentPage++;
-        loadWeek(currentPage);
-        loadDay(currentPage);
+//        loadWeek(currentPage);
+//        loadDay(currentPage);
+        itemAdapter.setList(Arrays.asList(
+                new CalendarItem("as", "df"),
+                new CalendarItem("as", "df"),
+                new CalendarItem("as", "df"),
+                new CalendarItem("as", "df"),
+                new CalendarItem("as", "df"),
+                new CalendarItem("as", "df"),
+                new CalendarItem("as", "df"),
+                new CalendarItem("as", "df")
+        ));
+        itemAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -137,9 +152,10 @@ public class CalendarFragment extends Fragment implements Swipable {
         }
         saveWeek(currentPage);
         saveDay(currentPage);
-        itemAdapter.init();
+        itemAdapter.clear();
         currentPage--;
-        loadWeek(currentPage);
-        loadDay(currentPage);
+//        loadWeek(currentPage);
+//        loadDay(currentPage);
+        itemAdapter.notifyDataSetChanged();
     }
 }
