@@ -19,7 +19,7 @@ import java.util.List;
 public class CalendarItemListAdapter extends ArrayAdapter<CalendarItem> {
     private Context context;
     private List<CalendarItem> calendarItems;
-    private List<CalendarItemView> itemViews = new ArrayList<>();
+//    private List<CalendarItemView> itemViews = new ArrayList<>();
 
     public CalendarItemListAdapter(@NonNull Context context,
                                    @LayoutRes int resource,
@@ -27,11 +27,10 @@ public class CalendarItemListAdapter extends ArrayAdapter<CalendarItem> {
         super(context, resource, objects);
         this.context = context;
         calendarItems = objects;
-        init();
     }
 
 
-//    @Override
+    //    @Override
 //    public int getCount() {
 //        return this.calendarItems.size();
 //    }
@@ -55,10 +54,11 @@ public class CalendarItemListAdapter extends ArrayAdapter<CalendarItem> {
             itemView = (CalendarItemView) convertView;
         }
 
+//        if (!itemViews.contains(itemView))
+//            itemViews.add(itemView);
 
-        itemViews.add(itemView);
-
-        itemView.setContents(calendarItems.get(position).getContents());
+        if (calendarItems.size() + 1 > position)
+            itemView.setContents(calendarItems.get(position).getContents());
 
         return itemView;
     }

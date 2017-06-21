@@ -115,12 +115,14 @@ public class CalendarFragment extends Fragment implements Swipable {
         Cursor curPageCursor = db.rawQuery("select * from CALENDAR_DAY where page = ?", new String[]{page + ""});
         if (curPageCursor.getCount() < 1)
             return;
+        List<CalendarItem> items = new ArrayList<>();
         for (int i = 0; i < curPageCursor.getCount(); i++) {
             curPageCursor.moveToNext();
             int week = curPageCursor.getInt(2);
             String contents = curPageCursor.getString(3);
-            itemAdapter.setItem(week, contents);
+            items.add(week, new CalendarItem(week + "", contents));
         }
+        itemAdapter.setList(items);
         curPageCursor.close();
     }
 
@@ -130,18 +132,8 @@ public class CalendarFragment extends Fragment implements Swipable {
         saveDay(currentPage);
         itemAdapter.clear();
         currentPage++;
-//        loadWeek(currentPage);
-//        loadDay(currentPage);
-        itemAdapter.setList(Arrays.asList(
-                new CalendarItem("as", "df"),
-                new CalendarItem("as", "df"),
-                new CalendarItem("as", "df"),
-                new CalendarItem("as", "df"),
-                new CalendarItem("as", "df"),
-                new CalendarItem("as", "df"),
-                new CalendarItem("as", "df"),
-                new CalendarItem("as", "df")
-        ));
+        loadWeek(currentPage);
+        loadDay(currentPage);
         itemAdapter.notifyDataSetChanged();
     }
 
@@ -154,8 +146,8 @@ public class CalendarFragment extends Fragment implements Swipable {
         saveDay(currentPage);
         itemAdapter.clear();
         currentPage--;
-//        loadWeek(currentPage);
-//        loadDay(currentPage);
+        loadWeek(currentPage);
+        loadDay(currentPage);
         itemAdapter.notifyDataSetChanged();
     }
 }
