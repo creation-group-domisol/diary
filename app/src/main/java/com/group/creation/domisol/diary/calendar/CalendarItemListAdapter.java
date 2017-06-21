@@ -47,7 +47,6 @@ public class CalendarItemListAdapter extends BaseAdapter {
     }
 
     public void init() {
-        clear();
         addItem(new CalendarItem("월"));
         addItem(new CalendarItem("화"));
         addItem(new CalendarItem("수"));
@@ -55,10 +54,6 @@ public class CalendarItemListAdapter extends BaseAdapter {
         addItem(new CalendarItem("금"));
         addItem(new CalendarItem("토"));
         addItem(new CalendarItem("일"));
-    }
-
-    public void clear() {
-        calendarItems.clear();
     }
 
     public void addItem(CalendarItem calendarItem) {
