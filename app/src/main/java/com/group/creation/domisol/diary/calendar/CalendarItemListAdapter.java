@@ -57,7 +57,7 @@ public class CalendarItemListAdapter extends ArrayAdapter<CalendarItem> {
 //        if (!itemViews.contains(itemView))
 //            itemViews.add(itemView);
 
-        if (calendarItems.size() + 1 > position)
+        if (calendarItems.size()  > position)
             itemView.setContents(calendarItems.get(position).getContents());
 
         return itemView;

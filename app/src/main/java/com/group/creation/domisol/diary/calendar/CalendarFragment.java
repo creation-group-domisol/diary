@@ -46,16 +46,16 @@ public class CalendarFragment extends Fragment implements Swipable {
         monthSpinner = (Spinner) rootView.findViewById(R.id.month_spinner);
         ArrayAdapter<CharSequence> monthAdapter = ArrayAdapter.createFromResource(getContext(), R.array.month_array, R.layout.support_simple_spinner_dropdown_item);
         monthSpinner.setAdapter(monthAdapter);
-        monthSpinner.setPrompt("월");
 
         weekSpinner = (Spinner) rootView.findViewById(R.id.week_spinner);
         ArrayAdapter<CharSequence> weekAdapter = ArrayAdapter.createFromResource(getContext(), R.array.week_array, R.layout.support_simple_spinner_dropdown_item);
         weekSpinner.setAdapter(weekAdapter);
-        weekSpinner.setPrompt("주");
 
         itemAdapter = new CalendarItemListAdapter(getContext(), R.layout.calendar_list_item, new ArrayList<CalendarItem>());
         itemAdapter.init();
         calendarListContainer.setAdapter(itemAdapter);
+
+        loadCalendar();
         return rootView;
     }
 
@@ -100,8 +100,11 @@ public class CalendarFragment extends Fragment implements Swipable {
 
     private void loadWeek(int page)  {
         Cursor curPageCursor = db.rawQuery("select * from CALENDAR_WEEK where page = ?", new String[]{page + ""});
-        if (curPageCursor.getCount() < 1)
+        if (curPageCursor.getCount() < 1) {
+            monthSpinner.setSelection(0);
+            weekSpinner.setSelection(0);
             return;
+        }
         curPageCursor.moveToNext();
         Integer month = curPageCursor.getInt(1);
         Integer week = curPageCursor.getInt(2);
@@ -115,26 +118,26 @@ public class CalendarFragment extends Fragment implements Swipable {
         Cursor curPageCursor = db.rawQuery("select * from CALENDAR_DAY where page = ?", new String[]{page + ""});
         if (curPageCursor.getCount() < 1)
             return;
-        List<CalendarItem> items = new ArrayList<>();
         for (int i = 0; i < curPageCursor.getCount(); i++) {
             curPageCursor.moveToNext();
             int week = curPageCursor.getInt(2);
             String contents = curPageCursor.getString(3);
-            items.add(week, new CalendarItem(week + "", contents));
+            itemAdapter.setItem(week, contents);
         }
-        itemAdapter.setList(items);
         curPageCursor.close();
     }
 
     @Override
     public void swipeLeft() {
+        saveCalendar();
+        currentPage++;
+        loadCalendar();
+    }
+
+    private void saveCalendar() {
         saveWeek(currentPage);
         saveDay(currentPage);
         itemAdapter.clear();
-        currentPage++;
-        loadWeek(currentPage);
-        loadDay(currentPage);
-        itemAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -142,10 +145,12 @@ public class CalendarFragment extends Fragment implements Swipable {
         if (currentPage == 0) {
             return;
         }
-        saveWeek(currentPage);
-        saveDay(currentPage);
-        itemAdapter.clear();
+        saveCalendar();
         currentPage--;
+        loadCalendar();
+    }
+
+    private void loadCalendar() {
         loadWeek(currentPage);
         loadDay(currentPage);
         itemAdapter.notifyDataSetChanged();
