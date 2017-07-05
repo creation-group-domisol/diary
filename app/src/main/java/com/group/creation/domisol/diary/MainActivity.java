@@ -53,6 +53,16 @@ public class MainActivity extends AppCompatActivity {
                         "   weekday integer," +
                         "   content text" +
                         ")");
+
+                db.execSQL("" +
+                        "create table CONTACT (" +
+                        "   id integer PRIMARY KEY AUTOINCREMENT," +
+                        "   page integer," +
+                        "   idx integer," +
+                        "   name text," +
+                        "   email text," +
+                        "   phone text" +
+                        ")");
             }
 
             @Override

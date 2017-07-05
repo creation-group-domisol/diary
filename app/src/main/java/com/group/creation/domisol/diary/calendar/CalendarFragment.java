@@ -1,6 +1,5 @@
 package com.group.creation.domisol.diary.calendar;
 
-import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -12,14 +11,13 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.group.creation.domisol.diary.MainActivity;
 import com.group.creation.domisol.diary.R;
 import com.group.creation.domisol.diary.Swipable;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Created by cob on 2017. 3. 29..
@@ -32,6 +30,7 @@ public class CalendarFragment extends Fragment implements Swipable {
     private SQLiteDatabase db;
     private Spinner weekSpinner;
     private Spinner monthSpinner;
+    private TextView pageNumber;
     private CalendarItemListAdapter itemAdapter;
 
     @Nullable
@@ -41,7 +40,7 @@ public class CalendarFragment extends Fragment implements Swipable {
         db = mainActivity.getReadableDatabase();
 
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_calendar, container, false);
-        ListView calendarListContainer = (ListView) rootView.findViewById(R.id.calendarListContainer);
+        ListView calendarListContainer = (ListView) rootView.findViewById(R.id.calendar_list_container);
 
         monthSpinner = (Spinner) rootView.findViewById(R.id.month_spinner);
         ArrayAdapter<CharSequence> monthAdapter = ArrayAdapter.createFromResource(getContext(), R.array.month_array, R.layout.support_simple_spinner_dropdown_item);
@@ -53,6 +52,9 @@ public class CalendarFragment extends Fragment implements Swipable {
 
         itemAdapter = new CalendarItemListAdapter(getContext(), R.layout.calendar_list_item, new ArrayList<CalendarItem>());
         itemAdapter.init();
+
+        pageNumber = (TextView) rootView.findViewById(R.id.page_number);
+        pageNumber.setText(currentPage+"");
         calendarListContainer.setAdapter(itemAdapter);
 
         loadCalendar();
@@ -154,5 +156,6 @@ public class CalendarFragment extends Fragment implements Swipable {
         loadWeek(currentPage);
         loadDay(currentPage);
         itemAdapter.notifyDataSetChanged();
+        pageNumber.setText(currentPage+"");
     }
 }
