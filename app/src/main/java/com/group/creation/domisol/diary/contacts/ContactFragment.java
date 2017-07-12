@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.group.creation.domisol.diary.MainActivity;
 import com.group.creation.domisol.diary.R;
@@ -24,7 +25,7 @@ public class ContactFragment extends Fragment implements Swipable {
 
     private int currentPage = 0;
     private SQLiteDatabase db;
-//    private TextView pageNumber;
+    private TextView pageNumber;
     private ContactItemListAdapter itemAdapter;
 
     @Nullable
@@ -39,8 +40,8 @@ public class ContactFragment extends Fragment implements Swipable {
         itemAdapter = new ContactItemListAdapter(getContext(), R.layout.contact_list_item, new ArrayList<ContactItem>());
         itemAdapter.init();
 
-//        pageNumber = (TextView) rootView.findViewById(R.id.page_number);
-//        pageNumber.setText(currentPage+"");
+        pageNumber = (TextView) rootView.findViewById(R.id.contact_page);
+        pageNumber.setText(currentPage+"");
         contactListContainer.setAdapter(itemAdapter);
 
         loadContact();
@@ -113,6 +114,6 @@ public class ContactFragment extends Fragment implements Swipable {
     private void loadContact() {
         loadContacts(currentPage);
         itemAdapter.notifyDataSetChanged();
-//        pageNumber.setText(currentPage+"");
+        pageNumber.setText(currentPage + "");
     }
 }

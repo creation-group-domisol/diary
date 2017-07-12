@@ -30,7 +30,6 @@ public class CalendarItemView extends LinearLayout {
         TextView dateView = (TextView) findViewById(R.id.dayOfWeek);
         contentsView = (TextView) findViewById(R.id.contents);
 
-
         contentsView.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {

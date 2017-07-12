@@ -83,14 +83,6 @@ public class CalendarFragment extends Fragment implements Swipable {
 
     private void saveDayItem(CalendarItem calendarItem, int page, int weekday){
         String text = calendarItem.getContents();
-
-//        "create table CALENDAR_DAY (" +
-//                "   id integer PRIMARY KEY AUTOINCREMENT," +
-//                "   page integer," +
-//                "   weekday integer," +
-//                "   content text" +
-//                ")");
-
         Cursor curPageCursor = db.rawQuery("select content from CALENDAR_DAY where page = ? and weekday = ?", new String[]{page + "", weekday + ""});
         if (curPageCursor.getCount() < 1 && (text == null || !text.equals(""))) {
             db.execSQL("insert into CALENDAR_DAY (page, weekday, content) values(?, ?, ?)", new Object[]{page, weekday, text});
