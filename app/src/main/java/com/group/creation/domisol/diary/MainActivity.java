@@ -12,13 +12,14 @@ import com.group.creation.domisol.diary.calendar.CalendarFragment;
 import com.group.creation.domisol.diary.contacts.ContactFragment;
 import com.group.creation.domisol.diary.memo.MemoFragment;
 
-public class MainActivity extends AppCompatActivity {
-    private CalendarFragment calendarFragment = new CalendarFragment();
-    private MemoFragment memoFragment;
-    private ContactFragment contactFragment = new ContactFragment();
+public class MainActivity extends AppCompatActivity implements SectionSwitchable {
+    private final Section calendarFragment = new CalendarFragment();
+    private final Section memoFragment = new MemoFragment();
+    private final Section contactFragment = new ContactFragment();
     private FrameLayout mainContent;
     private SQLiteDatabase readableDatabase;
     private SQLiteDatabase writableDatabase;
+    private Section currentFragment;
 
 
     @Override
@@ -72,7 +73,6 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onOpen(SQLiteDatabase db) {
-                memoFragment = new MemoFragment();
                 super.onOpen(db);
             }
         };
@@ -81,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
         writableDatabase = sqLiteOpenHelper.getWritableDatabase();
 
         getSupportFragmentManager().beginTransaction().add(R.id.main_content, memoFragment).commit();
+        this.currentFragment = memoFragment;
     }
 
 
@@ -100,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
         if (fragment.isVisible())
             return;
         getSupportFragmentManager().beginTransaction().replace(R.id.main_content, fragment).commit();
+        this.currentFragment = (Section) fragment;
     }
 
     public SQLiteDatabase getReadableDatabase() {
@@ -108,5 +110,35 @@ public class MainActivity extends AppCompatActivity {
 
     public SQLiteDatabase getWritableDatabase() {
         return writableDatabase;
+    }
+
+    @Override
+    public boolean next() {
+        if (this.currentFragment == this.memoFragment) {
+            replaceView(this.calendarFragment);
+            this.currentFragment.goToFirstPage();
+            return true;
+        }
+        if (this.currentFragment == this.calendarFragment) {
+            replaceView(this.contactFragment);
+            this.currentFragment.goToFirstPage();
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean prev() {
+        if (this.currentFragment == this.calendarFragment) {
+            replaceView(this.memoFragment);
+            this.currentFragment.goToLastPage();
+            return true;
+        }
+        if (this.currentFragment == this.contactFragment) {
+            replaceView(this.calendarFragment);
+            this.currentFragment.goToLastPage();
+            return true;
+        }
+        return false;
     }
 }

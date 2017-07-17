@@ -15,6 +15,8 @@ import android.widget.TextView;
 
 import com.group.creation.domisol.diary.MainActivity;
 import com.group.creation.domisol.diary.R;
+import com.group.creation.domisol.diary.Section;
+import com.group.creation.domisol.diary.SectionSwitchable;
 import com.group.creation.domisol.diary.Swipable;
 
 import java.util.ArrayList;
@@ -23,7 +25,8 @@ import java.util.ArrayList;
  * Created by cob on 2017. 3. 29..
  */
 
-public class CalendarFragment extends Fragment implements Swipable {
+public class CalendarFragment extends Section implements Swipable {
+    private final static int MAX_PAGE = 10;
 
     private int currentPage = 0;
     private static final int DURATION = 7;
@@ -32,6 +35,10 @@ public class CalendarFragment extends Fragment implements Swipable {
     private Spinner monthSpinner;
     private TextView pageNumber;
     private CalendarItemListAdapter itemAdapter;
+
+    public CalendarFragment() {
+        super(10);
+    }
 
     @Nullable
     @Override
@@ -124,6 +131,10 @@ public class CalendarFragment extends Fragment implements Swipable {
     @Override
     public void swipeLeft() {
         saveCalendar();
+        if (this.currentPage == MAX_PAGE) {
+            ((SectionSwitchable) getContext()).next();
+            return;
+        }
         currentPage++;
         loadCalendar();
     }
@@ -136,10 +147,11 @@ public class CalendarFragment extends Fragment implements Swipable {
 
     @Override
     public void swipeRight() {
-        if (currentPage == 0) {
+        saveCalendar();
+        if (this.currentPage == 0) {
+            ((SectionSwitchable) getContext()).prev();
             return;
         }
-        saveCalendar();
         currentPage--;
         loadCalendar();
     }
@@ -149,5 +161,12 @@ public class CalendarFragment extends Fragment implements Swipable {
         loadDay(currentPage);
         itemAdapter.notifyDataSetChanged();
         pageNumber.setText(currentPage+"");
+    }
+
+    @Override
+    public boolean loadPage(int idx) {
+        this.currentPage = idx;
+        loadCalendar();
+        return true;
     }
 }

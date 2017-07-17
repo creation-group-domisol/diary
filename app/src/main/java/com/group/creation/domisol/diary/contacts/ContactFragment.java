@@ -13,6 +13,8 @@ import android.widget.TextView;
 
 import com.group.creation.domisol.diary.MainActivity;
 import com.group.creation.domisol.diary.R;
+import com.group.creation.domisol.diary.Section;
+import com.group.creation.domisol.diary.SectionSwitchable;
 import com.group.creation.domisol.diary.Swipable;
 
 import java.util.ArrayList;
@@ -21,12 +23,16 @@ import java.util.ArrayList;
  * Created by cob on 2017. 3. 29..
  */
 
-public class ContactFragment extends Fragment implements Swipable {
-
+public class ContactFragment extends Section implements Swipable {
+    private final static int MAX_PAGE = 10;
     private int currentPage = 0;
     private SQLiteDatabase db;
     private TextView pageNumber;
     private ContactItemListAdapter itemAdapter;
+
+    public ContactFragment() {
+        super(10);
+    }
 
     @Nullable
     @Override
@@ -92,6 +98,10 @@ public class ContactFragment extends Fragment implements Swipable {
     @Override
     public void swipeLeft() {
         saveContacts();
+        if (currentPage == MAX_PAGE) {
+            ((SectionSwitchable) getContext()).next();
+            return;
+        }
         currentPage++;
         loadContact();
     }
@@ -103,10 +113,11 @@ public class ContactFragment extends Fragment implements Swipable {
 
     @Override
     public void swipeRight() {
+        saveContacts();
         if (currentPage == 0) {
+            ((SectionSwitchable) getContext()).prev();
             return;
         }
-        saveContacts();
         currentPage--;
         loadContact();
     }
@@ -115,5 +126,12 @@ public class ContactFragment extends Fragment implements Swipable {
         loadContacts(currentPage);
         itemAdapter.notifyDataSetChanged();
         pageNumber.setText(currentPage + "");
+    }
+
+    @Override
+    public boolean loadPage(int idx) {
+        this.currentPage = idx;
+        loadContact();
+        return true;
     }
 }
